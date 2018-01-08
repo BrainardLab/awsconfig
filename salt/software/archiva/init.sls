@@ -72,12 +72,29 @@ archiva-user:
   - home: /var/archiva
   - fullname: archiva account
 
-/var/archiva/logs:
+{% for d in ['logs', 'temp'] %}
+/var/archiva/{{ d }}:
   file.directory:
-  - gid: archiva
+  - user: archiva
+  - group: archiva
   - mode: 755
+{% endfor %}
 
-{% for file in [ 'archiva-cassandra.properties', 'jetty.xml', 'shared.xml', 'archiva.xml', 'security.properties', 'wrapper.conf'] %}
+{% for file in [ 'archiva.xml', 'security.properties' ] %}
+/var/archiva/conf/{{ file }}:
+  file.managed:
+  - source: salt://files/var/archiva/conf/{{ file }}.jinja
+  - user: archiva
+  - group: archiva
+  - mode: 640
+  - makedirs: true
+  - template: jinja
+  - context: 
+      fqdn: {{ salt['grains.get']('fqdn', '') }}
+
+{% endfor %}
+
+{% for file in [ 'archiva-cassandra.properties', 'jetty.xml', 'shared.xml', 'wrapper.conf'] %}
 
 /var/archiva/conf/{{ file }}:
   file.managed:
