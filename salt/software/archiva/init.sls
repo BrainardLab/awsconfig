@@ -13,7 +13,7 @@
   - source: salt://files/etc/default/archiva
   - user: root
   - group: root
-  - mode: 644
+  - mode: 755
 
 patch:
   pkg.installed
@@ -22,6 +22,9 @@ mysql-server:
   pkg.installed
 
 mysql-connector-java.noarch:
+  pkg.installed
+
+java-1.8.0-openjdk:
   pkg.installed
 
 MySQL-python27:
@@ -69,13 +72,18 @@ archiva-user:
   - home: /var/archiva
   - fullname: archiva account
 
+/var/archiva/logs:
+  file.directory:
+  - gid: archiva
+  - mode: 755
+
 {% for file in [ 'archiva-cassandra.properties', 'jetty.xml', 'shared.xml', 'archiva.xml', 'security.properties', 'wrapper.conf'] %}
 
 /var/archiva/conf/{{ file }}:
   file.managed:
   - source: salt://files/var/archiva/conf/{{ file }}
   - user: archiva
-  - group: archvia
+  - group: archiva
   - mode: 640
-
+  - makedirs: true
 {% endfor %}
