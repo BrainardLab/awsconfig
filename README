@@ -1,3 +1,7 @@
 Salt configs and supporting scripts to configure Brainard
 AWS instances.
 
+run 
+
+   salt-call --local state.apply
+   salt-call --local state.apply software/nmap

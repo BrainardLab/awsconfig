@@ -1,6 +1,8 @@
 #!/bin/bash
 
-curl -L https://bootstrap.saltstack.com | bash install_salt.sh
+AWSCONFIG=/usr/local/awsconfig
+
+curl -s -L https://bootstrap.saltstack.com | bash 
 
 service salt-minion stop
 chkconfig --del salt-minion
@@ -8,4 +10,8 @@ chkconfig --del salt-minion
 pip install --upgrade boto3
 
 sed -i 's/^#* *file_client:.*$/file_client: local/' /etc/salt/minion
+
+[ -d /srv ] || mkdir /srv
+
+[ -e /srv/salt ] || ln -s /usr/local/awsconfig/salt /srv/salt
 
