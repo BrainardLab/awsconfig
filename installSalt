@@ -15,3 +15,9 @@ sed -i 's/^#* *file_client:.*$/file_client: local/' /etc/salt/minion
 
 [ -e /srv/salt ] || ln -s /usr/local/awsconfig/salt /srv/salt
 
+#
+# Salt seems to not understand the amazon distibution correctly, and things that ec2-2017 -> rh2
+# for the network management module
+#
+[ -e /usr/lib/python2.7/dist-packages/salt/templates/rh_ip/rh2_eth.jinja ] || ln -s /usr/lib/python2.7/dist-packages/salt/templates/rh_ip/rh7_eth.jinja /usr/lib/python2.7/dist-packages/salt/templates/rh_ip/rh2_eth.jinja
+
