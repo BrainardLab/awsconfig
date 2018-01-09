@@ -1,0 +1,1 @@
+files/etc/pki/tls/certs/wildcard.psych.upenn.edu-combined.crt filter=git-crypt diff=git-crypt
