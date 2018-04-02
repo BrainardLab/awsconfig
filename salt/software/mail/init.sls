@@ -1,3 +1,5 @@
+{% set fqdn = salt['grains.get']('fqdn', '') %}
+
 mail-packages:
   pkg.installed:
   - pkgs:
@@ -8,7 +10,7 @@ mail-packages:
   file.replace:
     - name: /etc/mail/sendmail.mc
     - pattern: ^.*MASQUERADE_AS.*$
-    - repl: MASQUERADE_AS(`brainard-archiva-test.psych.upenn.edu')dnl
+    - repl: MASQUERADE_AS(`{{ fqdn }}')dnl
 
 /etc/mail/sendmail.mc-masquerade-env:
   file.replace:
@@ -34,10 +36,17 @@ mail-packages:
     - pattern: ^.*MASQUERADE_DOMAIN\(localhost.localdomain\).*$
     - repl: MASQUERADE_DOMAIN(localhost.localdomain)
 
-/etc/mail/sendmail.mc-masquerade-amazonaws:
+/etc/mail/sendmail.mc-set-domain:
   file.line:
     - name: /etc/mail/sendmail.mc
     - after: MASQUERADE_DOMAIN\(localhost.localdomain\)
+    - content: define(`confDOMAIN_NAME', `{{ fqdn }}')dnl
+    - mode: ensure
+
+/etc/mail/sendmail.mc-masquerade-amazonaws:
+  file.line:
+    - name: /etc/mail/sendmail.mc
+    - after: MASQUERADE_DOMAIN\(localhost\)
     - content: MASQUERADE_DOMAIN(amazonaws.com)
     - mode: ensure
 
